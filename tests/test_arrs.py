@@ -1,17 +1,27 @@
+import pytest
+
 from utils import arrs
 
 
-def test_get():
-    assert arrs.get([1, 2, 3], 1, "test") == 2
-    assert arrs.get([1, 2, 3], 2, "test") == 3
-    assert arrs.get([1, 2, 3], 3, "test") == "test"
-    assert arrs.get([], 0, "test") == "test"
-    assert arrs.get([1, 2, 3], -1, "test") == "test"
+@pytest.fixture
+def fixture_array():
+    return [1, 2, 3, 4]
 
 
-def test_slice():
-    assert arrs.my_slice([1, 2, 3, 4], 1, 3) == [2, 3]
-    assert arrs.my_slice([1, 2, 3], 1) == [2, 3]
+@pytest.mark.parametrize('list, index, default, value', [
+    ([1, 2, 3], 1, "test", 2),
+    ([1, 2, 3], 2, "test", 3),
+    ([1, 2, 3], 3, "test", "test"),
+    ([], 0, "test", "test"),
+    ([1, 2, 3], -1, "test", "test"),
+])
+def test_get(list, index, default, value):
+    assert arrs.get(list, index, default) == value
+
+
+def test_slice(fixture_array):
+    assert arrs.my_slice(fixture_array, 1, 3) == [2, 3]
+    assert arrs.my_slice(fixture_array, 1) == [2, 3, 4]
     assert arrs.my_slice([]) == []
-    assert arrs.my_slice([1, 2, 4], -1) == [4]
-    assert arrs.my_slice([1, 2, 3, 4], - 5) == [1, 2, 3, 4]
+    assert arrs.my_slice(fixture_array, -1) == [4]
+    assert arrs.my_slice(fixture_array, - 5) == fixture_array
